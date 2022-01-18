@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../css/Layout.css">
+    <link rel="stylesheet" type="text/css" href="../css/Media.css"> 
+    <script src="http://courses.cs.cityu.edu.hk/cs2204/cw3/cinemas.js"></script>
+    <script src="../js/movies.js"></script>
+    <title>Zing!</title>
+  </head>
+  <body>
+    <header>
+      <div id="logo">
+        <img src="../Images/2.png" alt="Logo" title="Zing Logo" />
+      </div>
+      <h1 id="zing-cinema">ZING CINEMA</h1>
+    </header>
+    <div class="Nav">
+      <ul>
+        <li><a href="Index.html">Home</a></li>
+        <li>Now Showing</li>
+        <li><a href="Tickets.html">Tickets</a></li>
+      </ul>
+    </div>
+    <main>
+      <h2 id="show">Now Showing:</h2>
+      <form action="Tickets.html" id="F1">
+      <label for="selection"><b>Select Cinema:</b></label>
+      <select name="Select" id="selection" onchange="selector(this.value)">
+        <option value="select">Select Cinema Hall</option>
+        </select>
+      </form> 
+      <div id="timings">
+      </div>
+      <div id="imgg"></div>
+        <div class="bar"></div>  
+      <div id="location">
+        <h2>Map of the Cinemas:</h2>
+        <img src="../Images/Map.png" class="map" alt="Map" title="Map" />
+      </div>
+        <div id="address">
+          <h4>Address:</h4>
+          <p>
+            <b>City Cinema - Festival Walk:</b><br>
+            Chung Shun Building,<br>
+            6-12 Sai Yeung Choi St S,<br>
+            Mong Kok, Hong Kong
+          </p>
+          <p>
+            <b>City Cinema - Mong Kok:</b><br>
+            Chung Shun Building,<br>
+            6-12 Sai Yeung Choi St S,<br>
+            Mong Kok, Hong Kong
+          </p>
+          <p>
+            <b>City Cinema - Central:</b><br>
+            Chung Shun Building,<br>
+            6-12 Sai Yeung Choi St S,<br>
+            Mong Kok, Hong Kong
+          </p>
+        </div>  
+      <script>
+        var data1 = getMovies();
+        var data2 = getCinemas();
+        var l1 = getMovies().length;
+        var l2 = getCinemas().length;
+        var mcount = 0;
+        var bN =[];
+          for (var i =0; i< getCinemas().length; i++){
+            bN.push(data2[i].branchName);
+          }
+          for (var i = 0; i< l2;i++){
+            var bn = data2[i].branchName;
+            var slct = document.createElement("option");
+            slct.value = bn;
+            slct.innerHTML =`${bn}`;
+            document.getElementById("selection").appendChild(slct)
+          }
+
+
+        for (var j =0; j <l2; j++){
+          var formCont = document.createElement("div");
+          formCont.class = "formCont"
+          formCont.id = 'container'+j;
+          document.getElementById("timings").appendChild(formCont);
+          if (j !=0){
+            formCont.style.display = "none";
+          }
+          for (k=0; k< data2[j].movies.length; k++){
+            for (var z =0; z< l1;z++){
+              if (data1[z].id == data2[j].movies[k].id){
+                var mName = data1[z].name;
+                var img = data1[z].thumbnail;
+                var eachMov = document.createElement("form");
+                eachMov.id = 'fm'+ mcount;
+                eachMov.action = "Tickets.html";
+                eachMov.method ="GET";
+                eachMov.innerHTML = `
+                <img src="../Images/${img}" title="${mName}" alt="${mName}" class="thumbnail">
+                <label for"moviename">Movie Name:</label>
+                <input type="text" name="moviename" value="${mName}" readonly><br>
+                `
+                document.getElementById('container'+j).appendChild(eachMov);
+
+                var dtlabel = document.createElement("label");
+                dtlabel.for = "datetime";
+                dtlabel.innerHTML = `Date and Time:`
+                document.getElementById('fm'+mcount).append(dtlabel);
+
+                var dtselect = document.createElement("select");
+                dtselect.id = 'dt'+mcount;
+                dtselect.name = 'datetime';
+                document.getElementById('fm'+mcount).appendChild(dtselect);
+                for (var x =0; x<data2[j].movies[k].shows.length; x++){
+                  var dt = data2[j].movies[k].shows[x].datetime;
+                  var dtopt = document.createElement("option");
+                  dtopt.value= dt;
+                  dtopt.innerHTML = dt;
+                  document.getElementById('dt'+mcount).appendChild(dtopt);
+                }
+                var hlabel = document.createElement("label");
+                hlabel.for = "house";
+                hlabel.innerHTML = 'Select House: '
+                document.getElementById('fm'+ mcount).appendChild(hlabel);
+
+                var hselect = document.createElement("select");
+                hselect.id = 'h'+ mcount;
+                hselect.name = 'house';
+                document.getElementById('fm'+ mcount).appendChild(hselect);
+                  for(var y=0; y<data2[j].movies[k].shows.length; y++){
+                    var h = data2[j].movies[k].shows[y].house;
+                    var hopt = document.createElement("option");
+                    hopt.value = h;
+                    hopt.innerHTML = h;
+                    document.getElementById('h'+ mcount).appendChild(hopt);
+                }
+                var cnlabel = document.createElement("label");
+                cnlabel.for = "cinemaname";
+                cnlabel.innerHTML = "Cinema Name: "
+                document.getElementById('fm'+mcount).appendChild(cnlabel);
+                cnlabel.style.display = "none";
+
+                var cn = document.createElement("input");
+                cn.readonly = "readonly";
+                cn.name = "cinemaname";
+                cn.value = data2[j].branchName;
+                document.getElementById('fm'+mcount).appendChild(cn);
+                cn.style.display="none";
+
+                var btn = document.createElement("input");
+                btn.type="submit";
+                btn.id ="button";
+                btn.value="Buy Ticket";
+                document.getElementById('fm'+mcount).appendChild(btn);
+                
+                mcount++;
+              }
+            }
+          }
+        }
+        function selector(n){
+          for (m=0; m<data2.length; m++){
+            var s_cinema= data2[m].branchName;
+            if (s_cinema == n){
+              var showing = document.getElementById('container'+m);
+            }
+            else {
+              var notshowing = document.getElementById('container'+m);
+                notshowing.style.display = "none";
+            }
+          }
+          showing.style.display = "block";
+        }
+        window.onload= init()
+        function init(){
+          for (var i =0; i <l2; i++){
+            document.getElementById('container'+i).style.display="none"
+          }
+        }
+      </script>
+    </main>
+    <footer>
+      @Copyright of resources belongs to the corresponding copyright owners.
+      <br />
+      Fair use for education purpose| <span><a href="Index.html">Home</a></span>
+      <a href="Design.html">Design</a>
+    </footer>
+  </body>
+</html>
