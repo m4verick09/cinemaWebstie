@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../css/Layout.css">
+    <link rel="stylesheet" type="text/css" href="../css/ticket.css">
+    <title>Zing!</title>
+    <script src="../js/movies.js"></script>
+    <script src="http://courses.cs.cityu.edu.hk/cs2204/cw3/cinemas.js"></script>
+  </head>
+  <body onload="details()">
+    <header>
+      <div id="logo">
+        <img src="../Images/2.png" alt="Logo" title="Zing Logo" />
+      </div>
+      <h1 id="zing-cinema">ZING CINEMA</h1>
+    </header>
+    <div class="Nav">
+      <ul>
+        <li><a href="Index.html">Home</a></li>
+        <li><a href="NowShowing.html">Now Showing</a></li>
+        <li>Tickets</li>
+      </ul>
+    </div>
+    <main>
+      <form action="PrintPage.html" id="formdat" method="GET">
+        <label for="cn">Cinema:</label>
+        <input type="text" id="cn" name="cinemaname" readonly>
+        <label for="mN">Movie Name:</label>
+        <input type="text" id="mN" name="moviename" readonly>
+        <label for="dt">Date and Time:</label>
+        <input type="text" id="dt" name="datetime" readonly>
+        <label for="house">House:</label>
+        <input type="text" id="house" name="house" readonly>
+
+      <div class="seating-plan">
+        <table>
+          <thead>
+            <tr>
+              <th>ROW</th>
+              <th colspan="5">SCREEN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row"><b>A</b></td>
+              <td id="A1" class="seat" onclick="tdclick(this.id)">1</td>
+              <td id="A2" class="seat" onclick="tdclick(this.id)">2</td>
+              <td id="A3" class="seat" onclick="tdclick(this.id)">3</td>
+              <td id="A4" class="seat" onclick="tdclick(this.id)">4</td>
+              <td id="A5" class="seat" onclick="tdclick(this.id)">5</td>
+            </tr>
+            <tr>
+              <td class="row"><b>B</b></td>
+              <td id="B1" class="seat" onclick="tdclick(this.id)">1</td>
+              <td id="B2" class="seat" onclick="tdclick(this.id)">2</td>
+              <td id="B3" class="seat" onclick="tdclick(this.id)">3</td>
+              <td id="B4" class="seat" onclick="tdclick(this.id)">4</td>
+              <td id="B5" class="seat" onclick="tdclick(this.id)">5</td>
+            </tr>
+            <tr>
+              <td class="row"><b>C</b></td>
+              <td id="C1" class="seat" onclick="tdclick(this.id)">1</td>
+              <td id="C2" class="seat" onclick="tdclick(this.id)">2</td>
+              <td id="C3" class="seat" onclick="tdclick(this.id)">3</td>
+              <td id="C4" class="seat" onclick="tdclick(this.id)">4</td>
+              <td id="C5" class="seat" onclick="tdclick(this.id)">5</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6"><b>SEATS</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="bar"></div>
+      <!--<div id="selected-seats">-->
+        <h3><u>Selected Seats:</u></h3>
+          <input type="text" id="booked-seats" readonly />
+          <input type="Submit" class="button" value="Confirm" onclick="btnclick()" />
+        </form>
+    </main>
+    <script>
+      var booked = [];
+      function tdclick(x) {
+        console.log(x)
+        var box = document.getElementById(`${x}`);
+        box.style.backgroundColor = 'steelblue';
+        box.style.color="white"
+        box.style.textDecoration = 'none';
+        box.style.pointerEvents = 'none';
+        box.style.cursor = 'not-allowed';
+        booked.push(x)
+        document.getElementById("booked-seats").setAttribute("value",booked); 
+      }
+      console.log(booked)
+      function btnclick() {
+        localStorage.setItem("seat",booked)
+      }
+      function decipher(keys) {
+        for (let i=0; i<keys.length;i++){
+          if (keys.charAt(i)=="+"){
+            keys = keys.replace(keys.charAt(i)," ");
+          }
+        }
+        keys = keys.replace("%2C",", ");
+        keys = keys.replace("%3A", ":");
+        return keys;
+      }
+      function getData(data) {
+        var query = window.location.search.substring(1);
+        query = decipher(query);
+        var datas = query.split("&");
+        for (let i = 0;i< datas.length;i++){
+          var pair = datas[i].split("=");
+          if (pair[0]== data) {
+            return pair[1];
+          }
+        }
+        return null;
+      }
+      function details() {
+        document.getElementById("cn").value = getData('cinemaname')
+        document.getElementById("mN").value = getData('moviename');
+        document.getElementById("dt").value = getData('datetime');
+        document.getElementById("house").value = getData('house');
+      }
+    </script>
+    <footer>
+      @Copyright of resources belongs to the corresponding copyright owners.
+      <br />
+      Fair use for education purpose| <span><a href="Index.html">Home</a></span>
+      <a href="Design.html">Design</a>
+    </footer>
+    
+  </body>
+</html>
